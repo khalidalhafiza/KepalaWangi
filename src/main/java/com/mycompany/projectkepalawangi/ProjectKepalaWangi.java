@@ -3,9 +3,8 @@ package com.mycompany.projectkepalawangi;
 import java.util.Scanner;
 
 public class ProjectKepalaWangi {
-
     public static void eksekusiSimulasiProses(LayananCuci layanan) {
-        layanan.prosesCuci();
+        layanan.prosesCuci(); 
     }
 
     public static void cariDataTransaksi(String namaPelanggan, LayananCuci[] daftarTransaksi, int jumlahTransaksi) {
@@ -16,6 +15,14 @@ public class ProjectKepalaWangi {
                 daftarTransaksi[i].tampilkanInformasi();
                 System.out.print(" -> Detail: ");
                 eksekusiSimulasiProses(daftarTransaksi[i]); 
+                
+                if (daftarTransaksi[i] instanceof CetakNota) {
+                    ((CetakNota) daftarTransaksi[i]).cetakNotaTransaksi();
+                }
+                if (daftarTransaksi[i] instanceof BisaGaransi) {
+                    ((BisaGaransi) daftarTransaksi[i]).berikanGaransi();
+                }
+                
                 System.out.println();
                 ditemukan = true;
             }
@@ -31,6 +38,14 @@ public class ProjectKepalaWangi {
                 daftarTransaksi[i].tampilkanInformasi();
                 System.out.print(" -> Detail: ");
                 eksekusiSimulasiProses(daftarTransaksi[i]); 
+                
+                if (daftarTransaksi[i] instanceof CetakNota) {
+                    ((CetakNota) daftarTransaksi[i]).cetakNotaTransaksi();
+                }
+                if (daftarTransaksi[i] instanceof BisaGaransi) {
+                    ((BisaGaransi) daftarTransaksi[i]).berikanGaransi();
+                }
+                
                 System.out.println();
                 ditemukan = true;
             }
@@ -42,20 +57,26 @@ public class ProjectKepalaWangi {
         try (Scanner scanner = new Scanner(System.in)) {
             LayananCuci[] daftarTransaksi = new LayananCuci[100];
             int jumlahTransaksi = 0;
+
+            daftarTransaksi[0] = new CuciStandar(101, "Budi", "Full Face", "Vanilla");
+            daftarTransaksi[1] = new CuciPremium(102, "Siti", "Ceramic", 2);
+            daftarTransaksi[2] = new CuciExpress(103, "Joko", 15, true);
+            jumlahTransaksi = 3; 
+
             boolean isRunning = true;
 
-            System.out.println("======================================");
-            System.out.println("  Sistem Layanan Pencucian Helm");
-            System.out.println("          KEPALA WANGI");
-            System.out.println("======================================");
+            System.out.println("=============================================");
+            System.out.println(" SISTEM MANAJEMEN CUCI HELM KEPALA WANGI ");
+            System.out.println("=============================================");
 
             while (isRunning) {
                 System.out.println("\nMenu Utama:");
-                System.out.println("1. Tambah Transaksi");
-                System.out.println("2. Lihat Daftar Transaksi");
+                System.out.println("1. Tambah Transaksi Baru");
+                System.out.println("2. Lihat Daftar Transaksi & Detail");
                 System.out.println("3. Cari Transaksi (Fitur Overloading)");
-                System.out.println("4. Keluar");
-                System.out.print("Pilih Menu: 1-4: ");
+                System.out.println("4. Cetak Nota & Detail Berdasarkan Nomor Antrean");
+                System.out.println("5. Keluar");
+                System.out.print("Pilih Menu: 1-5: ");
                 
                 int pilihan = scanner.nextInt();
                 scanner.nextLine();
@@ -82,14 +103,14 @@ public class ProjectKepalaWangi {
                                 case 1 -> {
                                     System.out.print("Jenis Helm (Full Face/Half Face): ");
                                     String helm = scanner.nextLine();
-                                    System.out.print("Aroma Parfum (Vanilla / Fresh Mint / Lavender): ");
+                                    System.out.print("Aroma Parfum (Vanilla / Kopi/ Lemon / dll): ");
                                     String parfum = scanner.nextLine();
                                     daftarTransaksi[jumlahTransaksi] = new CuciStandar(idBaru, namaBaru, helm, parfum);
                                 }
                                 case 2 -> {
-                                    System.out.print("Jenis Coating (Nano Ceramic / Anti-Bakteri): ");
+                                    System.out.print("Jenis Coating (Ceramic/Nano/Kaca/dll): ");
                                     String coating = scanner.nextLine();
-                                    System.out.print("Jumlah Layer Coating (1-3 Layer): ");
+                                    System.out.print("Jumlah Layer Coating (Angka): ");
                                     int layer = scanner.nextInt();
                                     scanner.nextLine();
                                     daftarTransaksi[jumlahTransaksi] = new CuciPremium(idBaru, namaBaru, coating, layer);
@@ -100,7 +121,6 @@ public class ProjectKepalaWangi {
                                     scanner.nextLine();
                                     int menit = vip ? 15 : 30;
                                     daftarTransaksi[jumlahTransaksi] = new CuciExpress(idBaru, namaBaru, menit, vip);
-                                    System.out.println("- Estimasi waktu dikalkulasi otomatis: " + menit + " menit.");
                                 }
                                 default -> {
                                     System.out.println("Pilihan jenis tidak valid.");
@@ -116,7 +136,7 @@ public class ProjectKepalaWangi {
                         }
                     }
                     case 2 -> {
-                        System.out.println("\n-- Daftar Transaksi --");
+                        System.out.println("\n-- Daftar Transaksi & Detail --");
                         if (jumlahTransaksi == 0) {
                             System.out.println("Belum ada data.");
                         } else {
@@ -125,8 +145,16 @@ public class ProjectKepalaWangi {
                                 daftarTransaksi[i].tampilkanInformasi();
                                 System.out.print(" -> Detail: ");
                                 eksekusiSimulasiProses(daftarTransaksi[i]); 
+                                
+                                if (daftarTransaksi[i] instanceof CetakNota) {
+                                    ((CetakNota) daftarTransaksi[i]).cetakNotaTransaksi();
+                                }
+                                if (daftarTransaksi[i] instanceof BisaGaransi) {
+                                    ((BisaGaransi) daftarTransaksi[i]).berikanGaransi();
+                                }
+                                System.out.println("----------------------------------------");
                             }
-                            System.out.println("\nTotal Transaksi yang Terdaftar: " + jumlahTransaksi);
+                            System.out.println("Total Transaksi: " + jumlahTransaksi);
                         }
                         System.out.print("Tekan Enter untuk melanjutkan...");
                         scanner.nextLine();
@@ -155,6 +183,35 @@ public class ProjectKepalaWangi {
                         scanner.nextLine();
                     }
                     case 4 -> {
+                        System.out.println("\n-- Cetak Nota Berdasarkan Nomor Antrean --");
+                        if (jumlahTransaksi == 0) {
+                            System.out.println("Belum ada data transaksi.");
+                        } else {
+                            System.out.print("Masukkan nomor urut antrean (1 - " + jumlahTransaksi + "): ");
+                            int nomorUrut = scanner.nextInt();
+                            scanner.nextLine();
+                            
+                            int index = nomorUrut - 1;
+                            if (index >= 0 && index < jumlahTransaksi) {
+                                System.out.println("\n--- Hasil Cetak untuk Antrean ke-" + nomorUrut + " ---");
+                                daftarTransaksi[index].tampilkanInformasi();
+                                System.out.print(" -> Detail: ");
+                                eksekusiSimulasiProses(daftarTransaksi[index]); 
+
+                                if (daftarTransaksi[index] instanceof CetakNota) {
+                                    ((CetakNota) daftarTransaksi[index]).cetakNotaTransaksi();
+                                }
+                                if (daftarTransaksi[index] instanceof BisaGaransi) {
+                                    ((BisaGaransi) daftarTransaksi[index]).berikanGaransi();
+                                }
+                            } else {
+                                System.out.println("Nomor antrean tidak valid!");
+                            }
+                        }
+                        System.out.print("Tekan Enter untuk melanjutkan...");
+                        scanner.nextLine();
+                    }
+                    case 5 -> {
                         System.out.println("Terima kasih telah menggunakan sistem Kepala Wangi!");
                         isRunning = false;
                     }

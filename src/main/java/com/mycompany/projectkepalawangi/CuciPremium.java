@@ -4,7 +4,7 @@ public class CuciPremium extends LayananCuci implements CetakNota, BisaGaransi {
     private String jenisCoating;
     private int jumlahLayer;
 
-    public CuciPremium(int idTransaksi, String namaPelanggan, String jenisCoating, int jumlahLayer) {
+    public CuciPremium(int idTransaksi, String namaPelanggan, String jenisCoating, int jumlahLayer) throws Exception {
         super(idTransaksi, namaPelanggan);
         this.jenisCoating = jenisCoating;
         this.jumlahLayer = jumlahLayer;

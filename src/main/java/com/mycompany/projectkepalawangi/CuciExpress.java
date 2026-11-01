@@ -4,7 +4,7 @@ public class CuciExpress extends LayananCuci implements CetakNota {
     private int estimasiMenit;
     private boolean prioritasVIP;
 
-    public CuciExpress(int idTransaksi, String namaPelanggan, int estimasiMenit, boolean prioritasVIP) {
+    public CuciExpress(int idTransaksi, String namaPelanggan, int estimasiMenit, boolean prioritasVIP) throws Exception {
         super(idTransaksi, namaPelanggan);
         this.estimasiMenit = estimasiMenit;
         this.prioritasVIP = prioritasVIP;

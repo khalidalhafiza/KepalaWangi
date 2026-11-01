@@ -4,7 +4,7 @@ public class CuciStandar extends LayananCuci implements CetakNota {
     private String jenisHelm;
     private String aromaParfum;
 
-    public CuciStandar(int idTransaksi, String namaPelanggan, String jenisHelm, String aromaParfum) {
+    public CuciStandar(int idTransaksi, String namaPelanggan, String jenisHelm, String aromaParfum) throws Exception {
         super(idTransaksi, namaPelanggan);
         this.jenisHelm = jenisHelm;
         this.aromaParfum = aromaParfum;

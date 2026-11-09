@@ -1,212 +1,182 @@
 package com.mycompany.projectkepalawangi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ProjectKepalaWangi {
 
-    public static void eksekusiSimulasiProses(LayananCuci layanan) {
-        layanan.prosesCuci(); 
-    }
-
-    public static void cariDataTransaksi(String namaPelanggan, ArrayList<LayananCuci> daftarTransaksi) throws DataTidakDitemukanException {
-        boolean ditemukan = false;
-        System.out.println("Mencari transaksi untuk: " + namaPelanggan);
-        
-        for (int i = 0; i < daftarTransaksi.size(); i++) {
-            if (daftarTransaksi.get(i).getNamaPelanggan().equalsIgnoreCase(namaPelanggan)) {
-                daftarTransaksi.get(i).tampilkanInformasi();
-                System.out.print(" -> Detail: ");
-                eksekusiSimulasiProses(daftarTransaksi.get(i)); 
-                
-                if (daftarTransaksi.get(i) instanceof CetakNota) {
-                    ((CetakNota) daftarTransaksi.get(i)).cetakNotaTransaksi();
-                }
-                if (daftarTransaksi.get(i) instanceof BisaGaransi) {
-                    ((BisaGaransi) daftarTransaksi.get(i)).berikanGaransi();
-                }
-                ditemukan = true;
-            }
-        }
-        
-        if (!ditemukan) {
-            throw new DataTidakDitemukanException("Gagal: Transaksi dengan nama '" + namaPelanggan + "' tidak ditemukan dalam sistem!");
-        }
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<LayananCuci> daftarTransaksi = new ArrayList<>();
-
-        HashMap<String, String> dataMember = new HashMap<>();
+        OutletKepalaWangi outletPusat = new OutletKepalaWangi("Kepala Wangi Outlet Utama");
+        outletPusat.bukaOutlet();
 
         try {
-            daftarTransaksi.add(new CuciStandar(101, "Budi", "Full Face", "Vanilla"));
-            daftarTransaksi.add(new CuciPremium(102, "Siti", "Ceramic", 2));
-            daftarTransaksi.add(new CuciExpress(103, "Joko", 15, true));
+            outletPusat.tambahTransaksi(new CuciStandar(101, "Budi", "Full Face", "Vanilla"));
+            outletPusat.tambahTransaksi(new CuciPremium(102, "Siti", "Ceramic", 2));
+            outletPusat.tambahTransaksi(new CuciExpress(103, "Joko", 15, true));
             
-            dataMember.put("1", "Budi Santoso");
-            dataMember.put("2", "Siti Aminah");
+            outletPusat.tambahPelanggan(new Pelanggan("P001", "Budi Santoso"));
+            outletPusat.tambahPelanggan(new Pelanggan("P002", "Siti Aminah"));
         } catch (Exception e) {
-            System.out.println("Error saat inisialisasi data: " + e.getMessage());
+            System.out.println("Error inisialisasi: " + e.getMessage());
         }
 
         boolean isRunning = true;
 
         System.out.println("=============================================");
-        System.out.println(" SISTEM MANAJEMEN CUCI HELM KEPALA WANGI ");
+        System.out.println("      SISTEM MANAJEMEN CUCI HELM KEPALA WANGI ");
         System.out.println("=============================================");
 
         while (isRunning) {
             try {
                 System.out.println("\nMenu Utama:");
-                System.out.println("1. Tambah Transaksi Baru");
-                System.out.println("2. Lihat Daftar Transaksi & Detail (ArrayList)");
-                System.out.println("3. Cari Transaksi (Demo Custom Exception)");
-                System.out.println("4. Cetak Nota Berdasarkan Nomor Antrean");
-                System.out.println("5. Kelola Member (Demo HashMap)");
-                System.out.println("6. Keluar");
-                System.out.print("Pilih Menu: 1-6: ");
+                System.out.println("1. Tambah Transaksi");
+                System.out.println("2. Lihat Daftar Transaksi");
+                System.out.println("3. Cari Transaksi (Custom Exception)");
+                System.out.println("4. Manajemen Pelanggan (HashMap)");
+                System.out.println("5. Cetak Nota Berdasarkan Nomor Antrean");
+                System.out.println("6. Simulasi Transaksi (Demo Association)");
+                System.out.println("7. Keluar");
+                System.out.print("Pilih Menu: 1-7: ");
                 
                 int pilihan = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (pilihan) {
                     case 1 -> {
-                        System.out.println("\n-- Pilih Jenis Layanan --");
-                        System.out.println("1. Cuci Standar");
-                        System.out.println("2. Cuci Premium");
-                        System.out.println("3. Cuci Express");
-                        System.out.print("Pilihan (1/2/3): ");
-                        int jenis = scanner.nextInt();
-                        scanner.nextLine();
+                System.out.println("\n-- Pilih Jenis Layanan --");
+                System.out.println("1. Cuci Standar");
+                System.out.println("2. Cuci Premium");
+                System.out.println("3. Cuci Express");
+                System.out.print("Pilihan (1/2/3): ");
+                int jenis = scanner.nextInt();
+                scanner.nextLine();
 
-                        System.out.print("Masukkan ID Transaksi: ");
-                        int idBaru = scanner.nextInt();
-                        scanner.nextLine();
-                        
-                        System.out.print("Masukkan Nama Pelanggan: ");
-                        String namaBaru = scanner.nextLine();
+                System.out.print("Masukkan ID Transaksi: ");
+                int idBaru = scanner.nextInt();
+                scanner.nextLine();
+    
+                System.out.print("Masukkan Nama Pelanggan: ");
+                String namaBaru = scanner.nextLine();
 
-                        if (jenis == 1) {
-                            System.out.print("Jenis Helm (Full Face/Half Face): ");
-                            String helm = scanner.nextLine();
-                            System.out.print("Aroma Parfum (Vanilla / Kopi/ Lemon): ");
-                            String parfum = scanner.nextLine();
-                            daftarTransaksi.add(new CuciStandar(idBaru, namaBaru, helm, parfum));
-                        } else if (jenis == 2) {
-                            System.out.print("Jenis Coating(Ceramic/Nano/Kaca): ");
-                            String coating = scanner.nextLine();
-                            System.out.print("Jumlah Layer: ");
-                            int layer = scanner.nextInt();
-                            scanner.nextLine();
-                            daftarTransaksi.add(new CuciPremium(idBaru, namaBaru, coating, layer));
-                        } else if (jenis == 3) {
-                            System.out.print("Prioritas VIP (true/false): ");
-                            boolean vip = scanner.nextBoolean();
-                            scanner.nextLine();
-                            int menit = vip ? 15 : 30;
-                            daftarTransaksi.add(new CuciExpress(idBaru, namaBaru, menit, vip));
-                        }
-                        System.out.println("Sukses! Transaksi ditambahkan. Total data: " + daftarTransaksi.size());
+                try {   
+                    if (jenis == 1) {
+                        System.out.print("Jenis Helm: ");
+                        String helm = scanner.nextLine();
+                        System.out.print("Aroma Parfum: ");
+                        String parfum = scanner.nextLine();
+                        outletPusat.tambahTransaksi(new CuciStandar(idBaru, namaBaru, helm, parfum));
+                    } else if (jenis == 2) {
+                        System.out.print("Jenis Coating: ");
+                        String coating = scanner.nextLine();
+                        System.out.print("Jumlah Layer: ");
+                        int layer = scanner.nextInt();
+                        scanner.nextLine();
+                        outletPusat.tambahTransaksi(new CuciPremium(idBaru, namaBaru, coating, layer));
+                    } else if (jenis == 3) {
+                        System.out.print("Prioritas VIP (true/false): ");
+                        boolean vip = scanner.nextBoolean();
+                        scanner.nextLine();
+                        int menit = vip ? 15 : 30;
+                        outletPusat.tambahTransaksi(new CuciExpress(idBaru, namaBaru, menit, vip));
                     }
+                    System.out.println("Sukses! Transaksi berhasil ditambahkan.");
+                } catch (Exception e) {
+                    System.out.println("Gagal menambah transaksi: " + e.getMessage());
+                }
+            }
                     case 2 -> {
-                        System.out.println("\n-- Daftar Transaksi & Detail --");
-                        if (daftarTransaksi.isEmpty()) {
-                            System.out.println("Belum ada data transaksi.");
-                        } else {
-                            for (int i = 0; i < daftarTransaksi.size(); i++) {
-                                System.out.print((i + 1) + ". ");
-                                daftarTransaksi.get(i).tampilkanInformasi();
-                                System.out.print(" -> Detail: ");
-                                eksekusiSimulasiProses(daftarTransaksi.get(i)); 
-                                
-                                if (daftarTransaksi.get(i) instanceof CetakNota) {
-                                    ((CetakNota) daftarTransaksi.get(i)).cetakNotaTransaksi();
-                                }
-                                if (daftarTransaksi.get(i) instanceof BisaGaransi) {
-                                    ((BisaGaransi) daftarTransaksi.get(i)).berikanGaransi();
-                                }
-                                System.out.println("----------------------------------------");
-                            }
-                            System.out.println("Total Transaksi: " + daftarTransaksi.size());
-                        }
+                        System.out.println("\n-- Daftar Transaksi --");
+                        outletPusat.lihatSemuaTransaksi();
                     }
                     case 3 -> {
-                        System.out.println("\n-- Fitur Cari Transaksi (Custom Exception) --");
+                        System.out.println("\n-- Fitur Cari Transaksi --");
                         System.out.print("Masukkan Nama Pelanggan yang dicari: ");
                         String kataKunci = scanner.nextLine();
                         
                         try {
-                            cariDataTransaksi(kataKunci, daftarTransaksi);
+                            outletPusat.cariTransaksi(kataKunci);
                         } catch (DataTidakDitemukanException e) {
                             System.out.println("Peringatan: " + e.getMessage());
-                        } finally {
-                            System.out.println("-> Sesi pencarian selesai dieksekusi.");
                         }
                     }
                     case 4 -> {
+                        System.out.println("\n-- Kelola Pelanggan --");
+                        System.out.println("1. Tambah Pelanggan");
+                        System.out.println("2. Cari Pelanggan via ID");
+                        System.out.println("3. Lihat Semua Pelanggan");
+                        System.out.print("Pilih: ");
+                        int menuP = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (menuP == 1) {
+                            System.out.print("Masukkan ID Pelanggan: ");
+                            String id = scanner.nextLine();
+                            System.out.print("Masukkan Nama: ");
+                            String nama = scanner.nextLine();
+                            outletPusat.tambahPelanggan(new Pelanggan(id, nama));
+                        } else if (menuP == 2) {
+                            System.out.print("ID Pelanggan yg dicari: ");
+                            outletPusat.cariPelanggan(scanner.nextLine());
+                        } else if (menuP == 3) {
+                            outletPusat.lihatSemuaPelanggan();
+                        }
+                    }
+                    case 5 -> {
                         System.out.println("\n-- Cetak Nota Berdasarkan Nomor Antrean --");
-                        if (daftarTransaksi.isEmpty()) {
+                        if (outletPusat.getJumlahTransaksi() == 0) {
                             System.out.println("Belum ada data transaksi.");
                         } else {
-                            System.out.print("Masukkan nomor urut antrean (1 - " + daftarTransaksi.size() + "): ");
+                            outletPusat.lihatSemuaTransaksi();
+                            System.out.print("Masukkan nomor urut antrean (1 - " + outletPusat.getJumlahTransaksi() + "): ");
                             int nomorUrut = scanner.nextInt();
                             scanner.nextLine();
                             
                             int index = nomorUrut - 1;
-                            if (index >= 0 && index < daftarTransaksi.size()) {
+                            if (index >= 0 && index < outletPusat.getJumlahTransaksi()) {
                                 System.out.println("\n--- Hasil Cetak untuk Antrean ke-" + nomorUrut + " ---");
-                                daftarTransaksi.get(index).tampilkanInformasi();
+                                LayananCuci item = outletPusat.getTransaksiInt(index);
+                                item.tampilkanInformasi();
                                 System.out.print(" -> Detail: ");
-                                eksekusiSimulasiProses(daftarTransaksi.get(index)); 
+                                item.prosesCuci();
 
-                                if (daftarTransaksi.get(index) instanceof CetakNota) {
-                                    ((CetakNota) daftarTransaksi.get(index)).cetakNotaTransaksi();
+                                if (item instanceof CetakNota) {
+                                    ((CetakNota) item).cetakNotaTransaksi();
                                 }
-                                if (daftarTransaksi.get(index) instanceof BisaGaransi) {
-                                    ((BisaGaransi) daftarTransaksi.get(index)).berikanGaransi();
+                                if (item instanceof BisaGaransi) {
+                                    ((BisaGaransi) item).berikanGaransi();
                                 }
                             } else {
                                 System.out.println("Nomor antrean tidak valid!");
                             }
                         }
                     }
-                    case 5 -> {
-                        System.out.println("\n-- Kelola Member (HashMap) --");
-                        System.out.println("1. Tambah Member Baru");
-                        System.out.println("2. Cari Member via ID");
-                        System.out.println("3. Tampilkan Semua Member");
-                        System.out.print("Pilih: ");
-                        int menuMember = scanner.nextInt();
-                        scanner.nextLine();
+                    case 6 -> {
+                        System.out.println("\n-- Simulasi Transaksi (Asosiasi) --");
+                        System.out.print("Masukkan ID Pelanggan: ");
+                        String inputId = scanner.nextLine();
+                        Pelanggan peminjam = outletPusat.getPelanggan(inputId);
 
-                        if (menuMember == 1) {
-                            System.out.print("Masukkan ID Member (Key): ");
-                            String idKey = scanner.nextLine();
-                            System.out.print("Masukkan Nama Lengkap (Value): ");
-                            String namaVal = scanner.nextLine();
-                            dataMember.put(idKey, namaVal);
-                            System.out.println("Berhasil menambahkan member baru!");
-                        } else if (menuMember == 2) {
-                            System.out.print("Masukkan ID Member yang dicari: ");
-                            String cariId = scanner.nextLine();
-                            if (dataMember.containsKey(cariId)) {
-                                System.out.println("Ditemukan! Nama Member: " + dataMember.get(cariId));
+                        if (peminjam == null) {
+                            System.out.println("Gagal: Pelanggan belum terdaftar!");
+                        } else if (outletPusat.getJumlahTransaksi() == 0) {
+                            System.out.println("Gagal: Belum ada transaksi yang tersedia.");
+                        } else {
+                            outletPusat.lihatSemuaTransaksi();
+                            System.out.print("Pilih Nomor Transaksi yg ingin diproses: ");
+                            int noTrx = scanner.nextInt() - 1;
+                            scanner.nextLine();
+
+                            if (noTrx >= 0 && noTrx < outletPusat.getJumlahTransaksi()) {
+                                LayananCuci itemTrx = outletPusat.getTransaksiInt(noTrx);
+                                TransaksiCuci.prosesCuciTransaksi(peminjam, itemTrx);
                             } else {
-                                System.out.println("Member dengan ID tersebut tidak terdaftar.");
-                            }
-                        } else if (menuMember == 3) {
-                            System.out.println("Total Member Terdaftar: " + dataMember.size());
-                            for (String keyId : dataMember.keySet()) {
-                                System.out.println("- ID: " + keyId + " | Nama: " + dataMember.get(keyId));
+                                System.out.println("Nomor transaksi tidak valid!");
                             }
                         }
                     }
-                    case 6 -> {
+                    case 7 -> {
                         System.out.println("Terima kasih telah menggunakan sistem Kepala Wangi!");
                         isRunning = false;
                     }
@@ -214,10 +184,8 @@ public class ProjectKepalaWangi {
                 }
 
             } catch (InputMismatchException e) {
-                System.out.println("\n[ERROR INPUT]: Terjadi kesalahan format! Harap masukkan angka yang valid.");
+                System.out.println("\n[ERROR INPUT]: Terjadi kesalahan format! Harap masukkan angka.");
                 scanner.nextLine();
-            } catch (Exception e) {
-                System.out.println("\n[SISTEM ERROR]: " + e.getMessage());
             }
         }
         scanner.close();

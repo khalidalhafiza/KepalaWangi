@@ -1,20 +1,18 @@
 package com.mycompany.projectkepalawangi;
 
-public abstract class LayananCuci {  
+import java.io.Serializable;
+
+public abstract class LayananCuci implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int idTransaksi;
     private String namaPelanggan;
 
-
-    public LayananCuci(int idTransaksi, String namaPelanggan) throws Exception {
-        if (idTransaksi < 0) {
-            throw new Exception("ID Transaksi tidak valid (tidak boleh negatif)!");
-        }
-        if (namaPelanggan == null || namaPelanggan.trim().isEmpty()) {
-            throw new Exception("Nama pelanggan tidak boleh kosong!");
-        }
+    public LayananCuci(int idTransaksi, String namaPelanggan) {
         this.idTransaksi = idTransaksi;
         this.namaPelanggan = namaPelanggan;
     }
+
+    public abstract void prosesCuci();
 
     public int getIdTransaksi() {
         return idTransaksi;
@@ -24,9 +22,7 @@ public abstract class LayananCuci {
         return namaPelanggan;
     }
 
-    public abstract void prosesCuci();
-
     public void tampilkanInformasi() {
-        System.out.printf("| %-5d | %-15s |", idTransaksi, namaPelanggan);
+        System.out.print("ID: " + idTransaksi + " | Pelanggan: " + namaPelanggan);
     }
 }
